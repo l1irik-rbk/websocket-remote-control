@@ -1,45 +1,50 @@
+import * as stream from 'stream';
 import robot from 'robotjs';
-import { WebSocket } from 'ws';
 import { drawCircle } from './drawCircle';
 import { drawSquare } from './drawSquare';
 import { drawRectangle } from './drawRectangle';
 import { prntScrn } from './prntScrn';
 
-export const dataParse = async (command: string, ws: WebSocket, width: number, height: number) => {
+export const dataParse = async (
+  command: string,
+  width: number,
+  height: number,
+  duplex: stream.Duplex
+) => {
   const { x, y } = robot.getMousePos();
 
   switch (command) {
     case 'mouse_position':
-      ws.send(`mouse_position ${x},${y}`);
+      duplex.write(`mouse_position ${x},${y}`, 'utf-8');
       break;
     case 'mouse_left':
-      ws.send(`mouse_left`);
+      duplex.write(`mouse_left`, 'utf-8');
       robot.moveMouse(-width + x, y);
       break;
     case 'mouse_right':
-      ws.send(`mouse_right`);
+      duplex.write(`mouse_right`, 'utf-8');
       robot.moveMouse(width + x, y);
       break;
     case 'mouse_down':
-      ws.send(`mouse_down`);
+      duplex.write(`mouse_down`, 'utf-8');
       robot.moveMouse(x, width + y);
       break;
     case 'mouse_up':
-      ws.send(`mouse_up`);
+      duplex.write(`mouse_up`, 'utf-8');
       robot.moveMouse(x, -width + y);
       break;
     case 'draw_circle':
-      drawCircle(ws, x, y, width);
+      drawCircle(duplex, x, y, width);
       break;
     case 'draw_square':
-      drawSquare(ws, x, y, width);
+      drawSquare(duplex, x, y, width);
       break;
     case 'draw_rectangle':
-      drawRectangle(ws, x, y, width, height);
+      drawRectangle(duplex, x, y, width, height);
       break;
     case 'prnt_scrn':
       const base64 = await prntScrn(x, y);
-      ws.send(`prnt_scrn ${base64}`);
+      duplex.write(`prnt_scrn ${base64}`, 'utf-8');
       break;
     default:
       break;

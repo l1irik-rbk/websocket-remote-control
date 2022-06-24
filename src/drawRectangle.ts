@@ -1,8 +1,8 @@
+import * as stream from 'stream';
 import robot from 'robotjs';
-import { WebSocket } from 'ws';
 
 export const drawRectangle = (
-  ws: WebSocket,
+  duplex: stream.Duplex,
   x: number,
   y: number,
   width: number,
@@ -14,5 +14,5 @@ export const drawRectangle = (
   robot.moveMouseSmooth(x, y + height);
   robot.moveMouseSmooth(x, y);
   robot.mouseToggle('up');
-  ws.send(`draw_square`);
+  duplex.write(`draw_rectangle `, 'utf-8');
 };
