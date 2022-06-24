@@ -15,7 +15,7 @@ wss.on('connection', (ws) => {
     const newData = data.toString().split(' ');
     const command = newData[0];
     const coords = +newData[1];
-    console.log('data', coords);
+    console.log('data', newData);
     dataParse(command, ws, coords);
     // const { x, y } = robot.getMousePos();
     // ws.send(`mouse_position ${x},${y}`);
@@ -46,6 +46,16 @@ const dataParse = (command: string, ws: WebSocket, coords: number) => {
     case 'mouse_up':
       ws.send(`mouse_up`);
       robot.moveMouse(x, -coords + y);
+      break;
+    case 'draw_circle':
+      robot.mouseToggle('down');
+      for (let i = 0; i <= Math.PI * 2; i += 0.01) {
+        const newX = x + coords * Math.cos(i) - coords;
+        const newY = y + coords * Math.sin(i);
+        robot.dragMouse(newX, newY);
+      }
+      robot.mouseToggle('up');
+      ws.send(`draw_circle`);
       break;
     default:
       break;
