@@ -23,7 +23,7 @@ wss.on('connection', (ws) => {
 
 wss.on('close', () => {});
 
-const dataParse = (command: string, ws: WebSocket, width: number, height: number) => {
+const dataParse = async (command: string, ws: WebSocket, width: number, height: number) => {
   const { x, y } = robot.getMousePos();
 
   switch (command) {
@@ -73,6 +73,21 @@ const dataParse = (command: string, ws: WebSocket, width: number, height: number
       robot.moveMouseSmooth(x, y);
       robot.mouseToggle('up');
       ws.send(`draw_square`);
+      break;
+    case 'prnt_scrn':
+      const widthSize = 200;
+      const heightSize = 200;
+      const img = robot.screen.capture(
+        x - widthSize / 2,
+        y - heightSize / 2,
+        widthSize,
+        heightSize
+      );
+
+      const jimp = new Jimp({ data: img.image, width: img.width, height: img.height });
+      const base64Img = await jimp.getBase64Async(Jimp.MIME_PNG);
+      const base64 = base64Img.split(',')[1];
+      ws.send(`prnt_scrn ${base64}`);
       break;
     default:
       break;
