@@ -14,5 +14,5 @@ export const drawRectangle = (
   robot.moveMouseSmooth(x, y + height);
   robot.moveMouseSmooth(x, y);
   robot.mouseToggle('up');
-  duplex.write(`draw_rectangle `, 'utf-8');
+  duplex.write(`draw_rectangle \0`, 'utf-8');
 };

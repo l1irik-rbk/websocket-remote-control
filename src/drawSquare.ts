@@ -8,5 +8,5 @@ export const drawSquare = (duplex: stream.Duplex, x: number, y: number, width: n
   robot.moveMouseSmooth(x, y + width);
   robot.moveMouseSmooth(x, y);
   robot.mouseToggle('up');
-  duplex.write(`draw_square`, 'utf-8');
+  duplex.write(`draw_square \0`, 'utf-8');
 };

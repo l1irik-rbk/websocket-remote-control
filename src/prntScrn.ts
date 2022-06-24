@@ -1,5 +1,4 @@
 import robot from 'robotjs';
-import { WebSocket } from 'ws';
 import Jimp from 'jimp';
 
 export const prntScrn = async (x: number, y: number) => {
